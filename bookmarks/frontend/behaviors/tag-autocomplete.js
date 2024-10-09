@@ -20,6 +20,9 @@ class TagAutocomplete extends Behavior {
         value: input.value,
         placeholder: input.getAttribute("placeholder") || "",
         variant: input.getAttribute("variant"),
+        fetchType: input.getAttribute("fetch-type") || "static",
+        matchType: input.getAttribute("match-type") || "starts_with",
+        minimumCharacter: parseInt(input.getAttribute("minimum-character")) || 3
       },
     });
 

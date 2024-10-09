@@ -1,5 +1,5 @@
 <script>
-  import {cache} from "../cache";
+  import {tags as cache} from "../tags";
   import {getCurrentWord, getCurrentWordBounds} from "../util";
 
   export let id;
@@ -7,6 +7,10 @@
   export let value;
   export let placeholder;
   export let variant = 'default';
+
+  export let fetchType = 'static';
+  export let matchType = 'starts_with';
+  export let minimumCharacter = 3;
 
   let isFocus = false;
   let isOpen = false;
@@ -28,11 +32,17 @@
   async function handleInput(e) {
     input = e.target;
 
-    const tags = await cache.getTags();
     const word = getCurrentWord(input);
+    const tags = await (async () => {
+      if (word.length < minimumCharacter) {
+        return [];
+      }
+
+      return cache.getTags(fetchType, matchType, word);
+    })();
 
     suggestions = word
-      ? tags.filter(tag => tag.name.toLowerCase().indexOf(word.toLowerCase()) === 0)
+      ? tags.filter(tag => tag.name.toLowerCase().indexOf(word.toLowerCase()))
       : [];
 
     if (word && suggestions.length > 0) {
